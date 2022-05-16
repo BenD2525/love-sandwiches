@@ -64,6 +64,16 @@ def update_sales_worksheet(data):
     print("Sales worksheet updated.\n")
 
 
+def update_surplus_worksheet(new_surplus_data):
+    """
+    Update surplus worksheet with surplus data
+    """
+    print("Updating surplus worksheet..\n")
+    surplus_worksheet = SHEET.worksheet("surplus")
+    surplus_worksheet.append_row(new_surplus_data)
+    print("Surplus worksheet updated.\n")
+
+
 def calculate_surplus_data(sales_row):
     """
     Compare sales to stock data.
@@ -73,7 +83,13 @@ def calculate_surplus_data(sales_row):
     print("Calculating surplus data...\n")
     stock = SHEET.worksheet("stock").get_all_values()
     stock_row = stock[-1]
-    print(stock_row)
+
+    surplus_data = []
+    for stock, sales in zip(stock_row, sales_row):
+        surplus = int(stock) - sales
+        surplus_data.append(surplus)
+    
+    return surplus_data
 
 
 def main():
@@ -83,7 +99,8 @@ def main():
     data = get_sales_data()
     sales_data = [int(num) for num in data]
     update_sales_worksheet(sales_data)
-    calculate_surplus_data(sales_data)
+    new_surplus_data = calculate_surplus_data(sales_data)
+    update_surplus_worksheet(new_surplus_data)
 
 
 print("Welcome to this walkthrough project!")
